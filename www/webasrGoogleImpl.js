@@ -1,97 +1,22 @@
-/*
- * 	Copyright (C) 2012-2016 DFKI GmbH
- * 	Deutsches Forschungszentrum fuer Kuenstliche Intelligenz
- * 	German Research Center for Artificial Intelligence
- * 	http://www.dfki.de
- * 
- * 	Permission is hereby granted, free of charge, to any person obtaining a 
- * 	copy of this software and associated documentation files (the 
- * 	"Software"), to deal in the Software without restriction, including 
- * 	without limitation the rights to use, copy, modify, merge, publish, 
- * 	distribute, sublicense, and/or sell copies of the Software, and to 
- * 	permit persons to whom the Software is furnished to do so, subject to 
- * 	the following conditions:
- * 
- * 	The above copyright notice and this permission notice shall be included 
- * 	in all copies or substantial portions of the Software.
- * 
- * 	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
- * 	OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
- * 	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
- * 	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
- * 	CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * 	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
- * 	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
 
 /**
  * Media Module: Implementation for Speech Recognition via the Google Web Speech Recognition service v2 via HTTPS/POST
- * 
+ *
  * @requires FLAC encoder (workers/flacEncoder.js)
  * @requires Cross-Domain access
  * @requires CSP for accessing the Google speech-api server, e.g. "connect-src https://www.google.com" or "default-src connect-src https://www.google.com"
- * 
+ *
  */
-newWebAudioAsrImpl = (function GoogleWebAudioInputImpl(){
+
+
+define(['mmirf/mediaManager', 'mmirf/configurationManager', 'mmirf/languageManager', 'mmirf/util/loadFile'], function(mediaManager, config, lang, ajax){
 
 	/**  @memberOf GoogleWebAudioInputImpl# */
 	var MODE = 'google';
-	
+
 	/**  @memberOf GoogleWebAudioInputImpl# */
-	var _pluginName = 'googleWebAudioInput';
+	var _pluginName = 'asrGoogleXhr';
 
-	/** 
-	 * legacy mode: use pre-v4 API of mmir-lib
-	 * @memberOf GoogleWebAudioInputImpl#
-	 */
-	var _isLegacyMode = true;
-	/** 
-	 * Reference to the mmir-lib core (only available in non-legacy mode)
-	 * @type mmir
-	 * @memberOf GoogleWebAudioInputImpl#
-	 */
-	var _mmir = null;
-	
-	//get mmir-lib core from global namespace:
-	_mmir = window[typeof MMIR_CORE_NAME === 'string'? MMIR_CORE_NAME : 'mmir'];
-	if(_mmir){
-		// set legacy-mode if version is < v4
-		_isLegacyMode = _mmir? _mmir.isVersion(4, '<') : true;
-	}
-	
-	/**
-	 * HELPER for require(): 
-	 * 		use module IDs (and require instance) depending on legacy mode
-	 * 
-	 * @param {String} id
-	 * 			the require() module ID
-	 * 
-	 * @returns {any} the require()'ed module
-	 * 
-	 * @memberOf GoogleWebAudioInputImpl#
-	 */
-	var _req = function(id){
-		var name = (_isLegacyMode? '' : 'mmirf/') + id;
-		return _mmir? _mmir.require(name) : require(name);
-	};
-	
-	/** 
-	 * @type mmir.ConfigurationManager
-	 * @memberOf GoogleWebAudioInputImpl#
-	 */
-	var mediaManager = _req('mediaManager');
-
-	/** 
-	 * @type mmir.LanguageManager
-	 * @memberOf GoogleWebAudioInputImpl#
-	 */
-	var languageManager = _req('languageManager');
-	/** 
-	 * @type mmir.ConfigurationManager
-	 * @memberOf GoogleWebAudioInputImpl#
-	 */
-	var configurationManager = _req('configurationManager');
-	
 	/** @memberOf GoogleWebAudioInputImpl# */
 	var result_types = {
 			"FINAL": 				"FINAL",
@@ -107,25 +32,25 @@ newWebAudioAsrImpl = (function GoogleWebAudioInputImpl(){
 	/**
 	 * HELPER retrieve language setting and apply impl. specific corrections/adjustments
 	 * (i.e. deal with Nuance specific quirks for language/country codes)
-	 *   
+	 *
 	 * @memberOf GoogleWebAudioInputImpl#
 	 */
 	var getFixedLang = function(options){
-		
-		var lang = options && options.language? options.language : languageManager.getLanguageConfig(_pluginName, 'long');
 
-		return languageManager.fixLang('google', lang);
+		var locale = options && options.language? options.language : lang.getLanguageConfig(_pluginName, 'long');
+
+		return lang.fixLang('google', locale);
 	};
 
 	/**
 	 * Recognition options for current recognition process.
-	 * 
+	 *
 	 * @memberOf GoogleWebAudioInputImpl#
 	 * @see mmir.MediaManager#recognize
 	 */
 	var currentOptions;
-	
-	/** 
+
+	/**
 	 * @returns {Error} an error description, that is a PlainObject with properties
 	 * 					message: STRING
 	 * 					status: NUMBER
@@ -136,14 +61,14 @@ newWebAudioAsrImpl = (function GoogleWebAudioInputImpl(){
 		var status = (ajax.status).toString(), msg;
 
 		switch (status) {
-		
+
 		//TODO procecess specific errors
 		//2xx "Success"
 		//4xx Client Error
 		//5xx Server Error
-		
+
 		default:
-			msg = 'Error ' + status + ': ' + this.responseText;
+			msg = 'Error ' + status + ': ' + ajax.responseText;
 		break;
 		}
 
@@ -159,30 +84,30 @@ newWebAudioAsrImpl = (function GoogleWebAudioInputImpl(){
 	var doSend = function(msg, successCallback, errorCallback){
 
 
-		function ajaxSuccess () {
+		function ajaxSuccess (data, textStatus, jqXHR) {
 
-			if (oAjaxReq.status == 200) {
+			if (jqXHR.status == 200) {
 
 				//result format example for JSON:
 				//
 				//{"result":[]}
 				//{"result":[{"alternative":[{"transcript":"this is a test","confidence":0.95095706},{"transcript":"this is the test"},{"transcript":"this is the best"},{"transcript":"this is a text"},{"transcript":"this is the tests"}],"final":true}],"result_index":0}
 				//
-				var respText = this.responseText;
+				var respText = jqXHR.responseText;
 
 				//QUICK-FIX: several results may get sent within one response, separated by a NEWLINE
 				var list = respText.split(/\r?\n/gm);
-				
+
 				var result = '', score, alt, data, text, num;
 				var type = lastBlob? result_types.FINAL : result_types.INTERMEDIATE;
 				for(var i=0,size=list.length; i < size; ++i){
-					
+
 					if(!list[i]){
 						continue;
 					}
-					
+
 					try{
-						
+
 						//format:
 						//	{
 						//		"result" : [{
@@ -208,34 +133,34 @@ newWebAudioAsrImpl = (function GoogleWebAudioInputImpl(){
 						if(typeof data.result_index === 'undefined'){
 							continue;
 						}
-						
+
 						data = data.result[data.result_index];
 //						type = data['final'] === true? 'FINAL' : 'INTERMEDIATE'; TODO
-						
+
 						data = data.alternative;
-						
+
 						for(var j=0,len=data.length; j < len; ++j){
-							
+
 							if(!data[j] || !data[j].transcript){
 								continue;
 							}
 
 							text = data[j].transcript;
 							num = data[j].confidence;
-							
+
 							if(!result){
 								result = text;
 								score = num;
 							} else {
-								
+
 								if(!alt){
 									alt = [];
 								}
-								
+
 								alt.push({text: text, score: num});
 							}
 						}
-						
+
 					} catch(err){
 						console.error('Error processing ASR result at '+i+' -> "'+list[i]+'": ' + err, err);
 					}
@@ -249,40 +174,66 @@ newWebAudioAsrImpl = (function GoogleWebAudioInputImpl(){
 				}
 
 			} else {
-				var err = asrErrorWrapper(oAjaxReq, this, dataSize);
+				var err = asrErrorWrapper(jqXHR, this, dataSize);
 				errorCallback && errorCallback(err.message, err.status);
 				//TODO invoke error-callback for some of the error-codes (?)
 			}
+		};//END: ajaxSuccess
+
+		function ajaxFail(jqXHR, textStatus, errorThrown) {
+			var err = asrErrorWrapper(jqXHR, this, dataSize);
+			errorCallback && errorCallback(err.message, err.status);
 		}
 
 		var data = msg.buf;//is a Blob
 		var dataSize = data.size;
 		var sample_rate = currentOptions.sampleRate? currentOptions.sampleRate : 44100;
-		
+
 //		console.log("Ajax-Data: ", data);
 
-		var oAjaxReq = new XMLHttpRequest();
+		// var oAjaxReq = new XMLHttpRequest();
 
 		var apiLang = getFixedLang(currentOptions);
 
-		var key = currentOptions.appKey? currentOptions.appKey : configurationManager.getString( [_pluginName, "appKey"] );
+		var key = currentOptions.appKey || config.getString( [_pluginName, "appKey"] );
 		var baseUrl = "https://www.google.com/speech-api/v2/recognize?client=chromium&output=json";
-		
+
 		var url = baseUrl + '&key=' + key + '&lang=' + apiLang;
-		
+
 		var alternatives = typeof currentOptions.results === 'number'? currentOptions.results : 1;
 		if(typeof alternatives !== 'undefined'){
 			url += '&maxAlternatives='+alternatives;
 		}
 
-		var oAjaxReq = new XMLHttpRequest();
+// 		var oAjaxReq = new XMLHttpRequest();
+//
+// 		oAjaxReq.onload = ajaxSuccess;
+// 		oAjaxReq.open("post", url, true);
+// 		oAjaxReq.setRequestHeader("Content-Type", "audio/x-flac; rate=" + sample_rate + ";");
+// //		oAjaxReq.setRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36;");
+// 		oAjaxReq.withCredentials = true;
+// 		oAjaxReq.send(data);
 
-		oAjaxReq.onload = ajaxSuccess;
-		oAjaxReq.open("post", url, true);
-		oAjaxReq.setRequestHeader("Content-Type", "audio/x-flac; rate=" + sample_rate + ";");
-//		oAjaxReq.setRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36;");
-		oAjaxReq.withCredentials = true;
-		oAjaxReq.send(data);
+		var headers = {
+			'Content-Type': 'audio/x-flac; rate=' + sample_rate +';',
+			'Accept': 'text/plain',			//TODO TEST -> NOTE cannot use jQuery option dataType='text', since jQuery automatically adds some Accept-entries which will result in an error-response
+			// 'Accept-Language': apiLang
+		};
+
+		//TODO support more options / custom options
+		var options = {
+			url: url,
+			type: 'POST',
+			headers: headers,
+			processData: false,					//prevent jQuery from trying to process the (binary) data
+			data: data,
+			mmirSendType: 'binary',				//add custom "marker" to signify that we are sending binary data
+
+			success: ajaxSuccess,
+			error: ajaxFail
+		};
+
+		ajax(options);
 
 
 //		//FIXM russa DEBUG:
@@ -293,18 +244,18 @@ newWebAudioAsrImpl = (function GoogleWebAudioInputImpl(){
 //		}
 //		Recorder.forceDownload(data, 'speechAsr_'+fileNameCounter+'.flac');
 //		//FIXM russa DEBUG (END)
-		
+
 		return;
 	};
 
-	/** initializes the connection to the googleMediator-server, 
+	/** initializes the connection to the googleMediator-server,
 	 * where the audio will be sent in order to be recognized.
-	 * 
+	 *
 	 * @memberOf GoogleWebAudioInputImpl#
 	 */
 	var doInitSend = function(oninit){
 
-		//DISABLED: not needed for nuance
+		//DISABLED: not needed for google-v2
 	};
 
 	/** @memberOf GoogleWebAudioInputImpl# */
@@ -360,12 +311,12 @@ newWebAudioAsrImpl = (function GoogleWebAudioInputImpl(){
 			return _pluginName;
 		},
 		setCallbacks: function(successCallbackFunc, failureCallbackFunc, stopUserMediaFunc, options){
-			
+
 			//callbacks need to be set in doSend() only
 //			successCallback = successCallbackFunc;
 //			errorCallback = failureCallbackFunc;
 //			var func = stopUserMediaFunc;
-			
+
 			currentOptions = options;
 		},
 		setLastResult: function(){
@@ -378,5 +329,5 @@ newWebAudioAsrImpl = (function GoogleWebAudioInputImpl(){
 			return lastBlob;
 		}
 	};
-		
-})();
+
+});//END define
