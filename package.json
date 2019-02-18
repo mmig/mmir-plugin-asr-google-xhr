@@ -1,40 +1,47 @@
 {
-  "name": "mmir-plugin-asr-google-web",
-  "version": "0.3.0",
-  "description": "\r\n      Cordova plugin for the MMIR framework that allows Automatic Speech Recognition (ASR)\r\n      via Google web speech recognition services (v2)\r\n    ",
-  "cordova": {
-    "id": "mmir-plugin-asr-google-web",
-    "platforms": []
+  "name": "mmir-plugin-asr-google-xhr",
+  "version": "1.0.0",
+  "description": "Cordova plugin for the MMIR framework that allows Automatic Speech Recognition (ASR) - via Google web speech recognition services (v2)",
+  "main": "./www/webasrGoogleImpl.js",
+  "directories": {
+    "lib": "./www"
+  },
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "pluginexport"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mmig/mmir-plugins-media.git#master:mmir-plugin-asr-google-web"
+    "url": "https://gitlab-cos.b.dfki.de/mmir/mmir-plugin-asr-google-xhr.git"
   },
   "keywords": [
-    "cordova",
-    "speech",
     "asr",
+    "speech",
     "recognition",
-    "ecosystem:cordova"
+    "google",
+    "xhr"
   ],
-  "engines": [
-    {
-      "name": "cordova",
-      "version": ">=5.0"
-    }
-  ],
-  "dependencies": {
-	  "mmir-plugin-encoder-flac": "../mmir-plugin-encoder-flac",
-	  "mmir-install-cordova-assets": "../mmir-install-cordova-assets"
-  },
-  "scripts": {
-	  "postinstall": "mmir-install-cordova-assets",
-	  "preuninstall": "mmir-uninstall-cordova-assets"
-  },
-  "author": "russa, DFKI",
+  "author": "russa",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mmig/mmir-plugins-media/issues"
+  "dependencies": {
+    "mmir-plugin-encoder-flac": "git+https://gitlab-cos.b.dfki.de/mmir/mmir-plugin-encoder-flac.git"
   },
-  "homepage": "https://github.com/mmig/mmir-plugins-media/tree/master%3Ammir-plugin-asr-google-web#readme"
+  "peerDependencies": {
+    "mmir-lib": "git+https://gitlab-cos.b.dfki.de/mmir/dev_mmir-lib.git#develop/webpack"
+  },
+  "cordova": {
+    "id": "mmir-plugin-asr-google-xhr",
+    "platforms": []
+  },
+  "engines": {
+    "cordovaDependencies": {
+      "1.0.0": {
+        "git+https://gitlab-cos.b.dfki.de/mmir/mmir-plugin-encoder-flac.git": ">=1.0.0"
+      }
+    }
+  },
+  "devDependencies": {
+    "mmir-plugin-exports": "git+https://gitlab-cos.b.dfki.de/mmir/mmir-plugin-exports.git"
+  }
 }
