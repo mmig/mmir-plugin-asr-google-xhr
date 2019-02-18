@@ -12,13 +12,13 @@ declare interface ASRGoogleXHROptions extends ASREncoderOptions {
    */
   language?: string;
 
-  //TODO?
-  // /**
-  //  * [supported option]
-  //  * number of n-best results that should (max.) be returned
-  //  * @type integer of [1, 10]
-  //  */
-  // results?: number;
+  /**
+   * [supported option]
+   * number of n-best results that should (max.) be returned
+   * @type integer
+   * @default 1
+   */
+  results?: number;
 
   //TODO?
   // /**
@@ -32,6 +32,14 @@ declare interface ASRGoogleXHROptions extends ASREncoderOptions {
    */
   appKey?: string;
   // codec: 'flac' | 'wav' NOT SUPPORTED via options
+
+  /**
+   * [custom option]
+   * samplerate (Hz) for audio encoding (should match the microphone's/recording sampling rate)
+   * @type integer
+   * @default 44100
+   */
+  sampleRate?: number;
 }
 
 declare interface MediaManagerASRNuanceXHR extends MediaManagerWebInput {

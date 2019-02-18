@@ -21,8 +21,7 @@ export interface ASRGoogleXHRConfig extends MediaManagerPluginEntry {
   /** credentials application key (MUST be set via configuration or options) */
   appKey?: string;
 
-  //TODO?
-  /** OPTIONAL number of n-best results that should (max.) be returned: integer of [1, 10] */
+  /** OPTIONAL number of n-best results that should (max.) be returned: integer, DEFAULT 1 */
   results?: number;
 
   //TODO?
@@ -31,6 +30,9 @@ export interface ASRGoogleXHRConfig extends MediaManagerPluginEntry {
 
   // /** (TODO?) NOT IMPLEMENTED / CONFIGURABLE (using const "https://www.google.com/speech-api/v2/recognize?client=chromium&output=json") */
   // baseUrl: string;
+
+  /** OPTIONAL custom option: samplerate (Hz) for audio encoding, DEFAULT 44100 */
+  sampleRate: number;
 }
 
 export enum RemoteUrls {

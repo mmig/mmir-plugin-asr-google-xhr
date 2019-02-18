@@ -187,11 +187,9 @@ define(['mmirf/mediaManager', 'mmirf/configurationManager', 'mmirf/languageManag
 
 		var data = msg.buf;//is a Blob
 		var dataSize = data.size;
-		var sample_rate = currentOptions.sampleRate? currentOptions.sampleRate : 44100;
+		var sample_rate = currentOptions.sampleRate || 44100;
 
 //		console.log("Ajax-Data: ", data);
-
-		// var oAjaxReq = new XMLHttpRequest();
 
 		var apiLang = getFixedLang(currentOptions);
 
@@ -200,24 +198,19 @@ define(['mmirf/mediaManager', 'mmirf/configurationManager', 'mmirf/languageManag
 
 		var url = baseUrl + '&key=' + key + '&lang=' + apiLang;
 
-		var alternatives = typeof currentOptions.results === 'number'? currentOptions.results : 1;
-		if(typeof alternatives !== 'undefined'){
-			url += '&maxAlternatives='+alternatives;
+		var alternatives = 1;
+		var results = currentOptions.results || config.getString( [_pluginName, "results"] );
+		if(results){
+			var num = parseInt(results, 10);
+			if(isFinite(num) && num > 0){
+				alternatives = results;
+			}
 		}
-
-// 		var oAjaxReq = new XMLHttpRequest();
-//
-// 		oAjaxReq.onload = ajaxSuccess;
-// 		oAjaxReq.open("post", url, true);
-// 		oAjaxReq.setRequestHeader("Content-Type", "audio/x-flac; rate=" + sample_rate + ";");
-// //		oAjaxReq.setRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36;");
-// 		oAjaxReq.withCredentials = true;
-// 		oAjaxReq.send(data);
+		url += '&maxAlternatives='+alternatives;
 
 		var headers = {
 			'Content-Type': 'audio/x-flac; rate=' + sample_rate +';',
 			'Accept': 'text/plain',			//TODO TEST -> NOTE cannot use jQuery option dataType='text', since jQuery automatically adds some Accept-entries which will result in an error-response
-			// 'Accept-Language': apiLang
 		};
 
 		//TODO support more options / custom options

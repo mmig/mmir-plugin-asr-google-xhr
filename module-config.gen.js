@@ -7,7 +7,9 @@
 module.exports = {
   pluginName: "asrGoogleXhr",
   config: [
-    /** OPTIONAL number of n-best results that should (max.) be returned: integer of [1, 10] */
+    /** OPTIONAL custom option: samplerate (Hz) for audio encoding, DEFAULT 44100 */
+    "sampleRate",
+    /** OPTIONAL number of n-best results that should (max.) be returned: integer, DEFAULT 1 */
     "results",
     /** credentials application key (MUST be set via configuration or options) */
     "appKey",
