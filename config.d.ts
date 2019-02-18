@@ -1,5 +1,5 @@
 
-import { MediaManagerPluginEntry } from 'mmir-plugin-encoder-core';
+import { MediaManagerPluginEntry } from 'mmir-lib';
 
 /**
  * (optional) entry "asrGoogleXhr" in main configuration.json
