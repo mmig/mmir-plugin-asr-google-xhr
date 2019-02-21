@@ -3,9 +3,9 @@ export * from './config';
 
 /// <reference types="mmir-lib" />
 import { ASROnStatus, ASROnError, ASRMode } from 'mmir-lib';
-import { MediaManagerWebInput, ASREncoderOptions } from 'mmir-plugin-encoder-core';
+import { PluginMediaManager as MediaManagerWebInput, ASREncoderOptions } from 'mmir-plugin-encoder-core';
 
-declare interface ASRGoogleXHROptions extends ASREncoderOptions {
+declare interface PluginASROptions extends ASREncoderOptions {
   /**
    * [supported option]
    * set language/country for ASR
@@ -42,8 +42,8 @@ declare interface ASRGoogleXHROptions extends ASREncoderOptions {
   sampleRate?: number;
 }
 
-declare interface MediaManagerASRNuanceXHR extends MediaManagerWebInput {
-  recognize: (options?: ASRGoogleXHROptions, statusCallback?: ASROnStatus, failureCallback?: ASROnError, isIntermediateResults?: boolean) => void;
-  startRecord: (options?: ASRGoogleXHROptions, successCallback?: ASROnStatus, failureCallback?: ASROnError, intermediateResults?: boolean) => void;
-  stopRecord: (options?: ASRGoogleXHROptions, successCallback?: ASROnStatus, failureCallback?: ASROnError) => void;
+declare interface PluginMediaManager extends MediaManagerWebInput {
+  recognize: (options?: PluginASROptions, statusCallback?: ASROnStatus, failureCallback?: ASROnError, isIntermediateResults?: boolean) => void;
+  startRecord: (options?: PluginASROptions, successCallback?: ASROnStatus, failureCallback?: ASROnError, intermediateResults?: boolean) => void;
+  stopRecord: (options?: PluginASROptions, successCallback?: ASROnStatus, failureCallback?: ASROnError) => void;
 }

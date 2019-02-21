@@ -10,11 +10,11 @@ import { MediaManagerPluginEntry } from 'mmir-lib';
  * {@link MediaManagerWebInput#recognize} or {@link MediaManagerWebInput#startRecord}
  * (if specified via the options, values will override configuration settings).
  */
-export interface ASRGoogleXHRConfigEntry {
-  asrGoogleXhr?: ASRGoogleXHRConfig;
+export interface PluginConfig {
+  asrGoogleXhr?: PluginConfigEntry;
 }
 
-export interface ASRGoogleXHRConfig extends MediaManagerPluginEntry {
+export interface PluginConfigEntry extends MediaManagerPluginEntry {
   /** OPTIONAL
    * @default "flac" (see mmir-plugin-encoder-core) */
   encoder?: 'flac'; // TODO (re-enable) 'wav'

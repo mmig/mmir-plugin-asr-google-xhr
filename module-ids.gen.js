@@ -7,6 +7,7 @@
 var _id = "mmir-plugin-asr-google-xhr";
 var _paths = {
   "mmir-plugin-asr-google-xhr/webasrGoogleImpl": "www/webasrGoogleImpl.js",
+  "mmir-plugin-asr-google-xhr/webasrGoogleImplCompat": "www/alt/webasrGoogleImplCompat.js",
   "mmir-plugin-asr-google-xhr": "www/webasrGoogleImpl.js"
 };
 var _workers = [];
