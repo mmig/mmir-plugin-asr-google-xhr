@@ -13,10 +13,18 @@ module.exports = {
     "results",
     /** credentials application key (MUST be set via configuration or options) */
     "appKey",
-    /** OPTIONAL
-     * @default "flac" (see mmir-plugin-encoder-core) */
-    "encoder"
+    /** OPTIONAL (see mmir-plugin-encoder-core)
+     * @default "flac" */
+    "encoder",
+    /** the plugin/module which which will load/use this specific ASR implementation
+     * @default mmir-plugin-encoder-core.js
+     */
+    "mod"
   ],
+  defaultValues: {
+    encoder: "flac",
+    mod: "mmir-plugin-encoder-core.js"
+  },
   remoteUrls: {
     baseUrl: "https://www.google.com"
   }

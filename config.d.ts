@@ -15,8 +15,14 @@ export interface PluginConfig {
 }
 
 export interface PluginConfigEntry extends MediaManagerPluginEntry {
-  /** OPTIONAL
-   * @default "flac" (see mmir-plugin-encoder-core) */
+
+  /** the plugin/module which which will load/use this specific ASR implementation
+   * @default mmir-plugin-encoder-core.js
+   */
+  mod: 'mmir-plugin-encoder-core.js';
+
+  /** OPTIONAL (see mmir-plugin-encoder-core)
+   * @default "flac" */
   encoder?: 'flac'; // TODO (re-enable) 'wav'
   /** credentials application key (MUST be set via configuration or options) */
   appKey?: string;
