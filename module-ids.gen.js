@@ -6,9 +6,9 @@
 
 var _id = "mmir-plugin-asr-google-xhr";
 var _paths = {
-  "mmir-plugin-asr-google-xhr/webasrGoogleImpl": "www/webasrGoogleImpl.js",
-  "mmir-plugin-asr-google-xhr/webasrGoogleImplCompat": "www/alt/webasrGoogleImplCompat.js",
-  "mmir-plugin-asr-google-xhr": "www/webasrGoogleImpl.js"
+  "mmir-plugin-asr-google-xhr/asrGoogleXhr": "www/asrGoogleXhr.js",
+  "mmir-plugin-asr-google-xhr/asrGoogleXhrCompat": "www/alt/asrGoogleXhrCompat.js",
+  "mmir-plugin-asr-google-xhr": "www/asrGoogleXhr.js"
 };
 var _workers = [];
 var _exportedModules = [

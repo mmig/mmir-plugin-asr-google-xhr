@@ -2,7 +2,7 @@
   "name": "mmir-plugin-asr-google-xhr",
   "version": "1.0.0",
   "description": "Cordova plugin for the MMIR framework that allows Automatic Speech Recognition (ASR) - via Google web speech recognition services (v2)",
-  "main": "./www/webasrGoogleImpl.js",
+  "main": "./www/asrGoogleXhr.js",
   "directories": {
     "lib": "./www"
   },
@@ -42,8 +42,8 @@
   },
   "mmir": {
     "compat": {
-      "./www/webasrGoogleImpl.js": {
-        "file": "./www/alt/webasrGoogleImplCompat.js",
+      "./www/asrGoogleXhr.js": {
+        "file": "./www/alt/asrGoogleXhrCompat.js",
         "type": "asr"
       }
     }

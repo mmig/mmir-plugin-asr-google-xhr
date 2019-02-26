@@ -23,7 +23,7 @@
 
     <!-- ASR plugin implementation for integration into MMIR framework  -->
     <asset
-        src="www/webasrGoogleImpl.js"
-        target="mmirf/env/media/webasrGoogleImpl.js" />
+        src="www/asrGoogleXhr.js"
+        target="mmirf/env/media/asrGoogleXhr.js" />
 
 </plugin>
