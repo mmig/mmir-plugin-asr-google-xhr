@@ -23,7 +23,7 @@
     <preference name="MMIR_PLUGIN_MODE" default="normal" />
     <hook src="res/js/before_plugin_install_hook.js" type="before_plugin_install" />
 
-    <dependency id="mmir-plugin-encoder-flac" url="https://gitlab-cos.b.dfki.de/mmir/mmir-plugin-encoder-flac" commit="master" />
+    <dependency id="mmir-plugin-encoder-flac" url="git+https://gitlab-cos.b.dfki.de/mmir/mmir-plugin-encoder-flac.git" commit="master" />
 
     <!-- ASR plugin implementation for integration into MMIR framework  -->
     <asset
