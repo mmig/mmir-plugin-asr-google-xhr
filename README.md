@@ -1,4 +1,4 @@
-# mmir-plugin-asr-google-web
+# mmir-plugin-asr-google-xhr
 
 Cordova plugin for the MMIR framework that allows Automatic Speech Recognition (ASR)
 via Google web speech recognition services (v2)
